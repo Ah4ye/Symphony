@@ -1,0 +1,32 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} : Panier{% endblock %}
+
+{% block titre_principal %}{{ parent() }} : Votre Panier {{username}} {% endblock %}
+
+{% block vue %}
+    <p><a href="{{ path('produit_list') }}">Retourner a mes achats</a></p>
+
+
+
+    {% if produits|length == 0 %}
+        <p>Aucun produit dans le panier</p>
+    {% else %}
+        <table>
+            <tr><th>Contenue de votre Panier</th><th></th></tr>
+            {% for produit in produits %}
+                {% set urlView = path('produit_view', {'id' : produit.id}) %}
+                {% set urlDelete = path('produit_delete', {'id' : produit.id}) %}
+                <tr>
+                    <td><a href="{{ urlView }}">{{ produit.denomination }}</a></td>
+                    <td>Quantiter</td>
+                    <td><a href="{{ urlDelete }}">delete</a></td>
+
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {{ dump(produits) }}
+    {{ dump(panierproduit) }}
+    {{ dump(paniers) }}
+{% endblock %}

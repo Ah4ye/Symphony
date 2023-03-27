@@ -1,0 +1,19 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+#######################################################
+# configuration personnelle
+
+# exclusion du répertoire de configuratrion de PHPStorm
+.idea
+
+# exclusion du répertoire des bases de données SQLite
+/database
