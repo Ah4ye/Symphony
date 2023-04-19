@@ -1,0 +1,92 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} : produits{% endblock %}
+
+{% block titre_principal %}{{ parent() }} : liste des produits{% endblock %}
+
+{% block vue %}
+    {%  if is_granted('ROLE_GESTION') or is_granted('ROLE_ADMIN')  %}
+    <p>Ici Mr. L'Admin/Gestionnaire vous seul pouvez supprimer les produits </p>
+    {% endif %}
+    <p>
+        {% if page == 0 %}
+            affichage de toutes les pages
+        {% else %}
+            affichage de la page {{ page }}
+        {% endif %}
+    </p>
+
+    {% if produits|length == 0 %}
+        <p>Aucun produit dans la base de données</p>
+    {% else %}
+        <table>
+            <tr>
+                <th>Libellé</th>
+                <th>Prix</th>
+                <th>Stock</th>
+                <th>Choix</th>
+                <th>Action</th>
+                {%  if is_granted('ROLE_GESTION') or is_granted('ROLE_ADMIN')  %}
+                <th>Supprimer</th>
+                {% endif %}
+                <th>Signalement</th>
+            </tr>
+            {% for produit in produits %}
+                {% set urlView = path('produit_view', {'id' : produit.id}) %}
+                {% set urlDelete = path('produit_delete', {'id' : produit.id}) %}
+
+
+                    <td><a href="{{ urlView }}">{{ produit.denomination }}</a></td>
+                    <td>{{ produit.Prix }}</a></td>
+                    <td>{{ produit.quantite }}</a></td>
+
+                    <form method="post" action="{{ path('produit_add_panier', {'id' : produit.id}) }}">
+                    <td>
+                {%  if  produit.quantite >= 1  %}
+                        <input type="number" name="quantite" placeholder="Ajout/Soustrait" >
+                    </td>
+                {% endif %}
+                    <td>
+                        <button type="submit">Ajouter au panier</button>
+                    </td>
+                    </form>
+
+
+                    {%  if is_granted('ROLE_GESTION') or is_granted('ROLE_ADMIN')  %}
+                    <td><a  class="btn btn-warning" href="{{ urlDelete }}">delete le produit</a></td>
+                    {% endif %}
+                    <td>
+                       {# //-------------- Partie Mail -------------------------- #}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Signaler un Produit</button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Votre Plainte</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form method="post" action="{{ path('app_mail') }}">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="nbr_produits" value="{{ produits|length }}" />
+                                            <label for="produit" class="col-form-label">Produit concerné : </label>
+                                            <input type="text" class="form-control" id="produit" name="produit" value="{{ produit.denomination }}">
+                                            <label for="Mail" class="col-form-label">Mail:</label>
+                                            <input type="email" class="form-control" id="Mail" name="Mail">
+                                            <label for="Message_Mail" class="col-form-label">Message:</label>
+                                            <textarea class="form-control" id="Message_Mail" name="Message_Mail"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Send message</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {# //-------------- Partie Mail -------------------------- #}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

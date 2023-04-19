@@ -1,0 +1,49 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} : Panier{% endblock %}
+
+{% block titre_principal %}{{ parent() }} : Votre Panier {{username}} {% endblock %}
+ {% set countPrix = 0 %}
+{% block vue %}
+    <p><a href="{{ path('produit_list') }}">Retourner à mes achats</a></p>
+
+
+
+    {% if produits|length == 0 %}
+        <p>Aucun produit dans le panier</p>
+    {% else %}
+        <table>
+            <tr><th>Contenue de votre Panier</th><th></th></tr>
+
+            {% for produit in produits %}
+                {% set urlView = path('produit_view', {'id' : produit.id}) %}
+                {% set urlMoins = path('panier_moins', {'id' : produit.id}) %}
+                {% set urlPlus = path('panier_plus', {'id' : produit.id}) %}
+                {% set urlDelete = path('panier_delete', {'id' : produit.id}) %}
+                <tr>
+                    <td><a href="{{ urlView }}">{{ produit.denomination }}</a></td>
+                    <td>Quantité choisis : {{ produit.quantite }} </td>
+                    <td><a href="{{ urlMoins }}">Reduire  </a></td>
+                    <td><a href="{{ urlPlus }}"> Plus  </a></td>
+                    <td>Prix : {{ produit.Prix }} </td>
+                    {% set countPrix = countPrix + produit.Prix %}
+                    <td><a href="{{ urlDelete }}"> delete de mon panier</a></td>
+
+                </tr>
+            {% endfor %}
+            <tr>
+                <td><span style="font-weight: bold; font-size: 20px;  vertical-align: bottom; ">Total : {{ countPrix}} €</span></td>
+                <td><span style="font-weight: bold; font-size: 20px; ">Total TTC : {{ countPrix*1.5}} €</span></td>
+            </tr>
+            <td>(Eh ouai la taxe evidement, jvous jure c'est l'etat pas moi )</td>
+        </table>
+        <tr>
+            <td colspan="2"><a href="{{ path('panier_vider') }}" class="btn btn-danger">Vider le panier</a></td>
+            <td colspan="2"><a href="{{ path('panier_commander') }}" class="btn btn-success">Commander</a></td>
+        </tr>
+
+
+    {% endif %}
+
+{% endblock %}
+

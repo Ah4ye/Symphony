@@ -1,0 +1,12 @@
+{% extends  'Sandbox/Layouts/layout4.html.twig' %}
+
+{% block title %}{{ parent() }} : sécurité{% endblock %}
+
+{% block titre_principal %}Sécurité : tests selon les rôles (Twig){% endblock %}
+
+{% block vue %}
+    ok pour lister les films
+    {% if is_granted('ROLE_DIRIGEANT') %}
+        (avec droit de suppression)
+    {% endif %}
+{% endblock %}

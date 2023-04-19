@@ -1,0 +1,109 @@
+{# menu de l'application #}
+
+
+{% if not nbElements is defined %}
+    {% set nbElements = 0 %}
+{% else %}
+    {% set nbElements = 5 %}
+{% endif %}
+
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Menu Arthur-Market</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('accueil_index') }}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            COMPTE
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if not(app.user) %}<li class="nav-item"><a class="nav-link" href="{{ path('security_login') }}">Connexion</a></li>{% endif %}
+                            {% if (app.user) %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('security_logout') }}">Deconnexion</a>
+                            </li>
+                            {% endif %}
+                            {% if ((not app.user) or is_granted('ROLE_ADMIN')) %}
+                            <li class="nav-item">
+                                {% if not (is_granted('ROLE_ADMIN')) %}
+                                <a class="nav-link" href="{{ path('security_inscription') }}">Inscription</a>
+                                {% else  %}
+                                <a class="nav-link" href="{{ path('security_inscription') }}">Crée Admin</a>
+                                {% endif %}
+                            </li>
+                            {% endif %}
+                            {% if (app.user) %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_profil') }}">Profil</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Produits
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if app.user %}
+                            <li>
+                                <a class="dropdown-item" href="{{ path('panier') }}">Mon Panier ({{ nbElements }})</a>
+                            </li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{{ path('produit_list') }}">Voir Produits</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    {%  if is_granted('ROLE_GESTION') or is_granted('ROLE_ADMIN')  %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Super-Action
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('produit_add_fixture') }}">Remplir le Magasin de Produits</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('magasin_add') }}">Ajouter un Magasin</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('magasin_stock', {'id' : 1}) }}">Stock Magasin</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('produit_magasin_add')}}">Ajouter un Produit dans un Magasin</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('produit_add_product')}}">Ajouter un Produit</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('produit_pays_add')}}">Ajouter un Pays pour un Produit</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_admin') }}">Gerer Utilisateurs</a>
+                                </li>
+                            </ul>
+                        </li>
+                   {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link disabled">Disabled</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <form class="d-flex" role="search" method="GET" action="{{ path('produit_recherche') }}">
+                    {% if app.user %}
+                    <input class="form-control me-2" type="search" name="search_query" placeholder="Nom du produit en entier" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </nav>
+</ul>
+

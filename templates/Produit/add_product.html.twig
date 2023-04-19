@@ -1,0 +1,13 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} : produits{% endblock %}
+
+{% block titre_principal %}{{ parent() }} : liste des produits{% endblock %}
+
+{% block vue %}
+
+    {{ form_start(form) }}
+    {{ form_end(form) }}
+
+
+{% endblock %}

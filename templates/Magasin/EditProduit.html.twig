@@ -1,0 +1,17 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} User {% endblock %}
+
+{% block titre_principal %}{{ parent() }} Interface Produit du Magasin {% endblock %}
+
+{% block vue %}
+
+    <figure class="text-center">
+    <h1 class="center">{{ produit.denomination|upper }}</h1>
+    <h4>{{ magasin.nom }}</h4>
+
+    {{ form_start(myform) }}
+    {{ form_row(myform.quantite) }}
+    {{ form_end(myform) }}
+    </figure>
+{% endblock %}

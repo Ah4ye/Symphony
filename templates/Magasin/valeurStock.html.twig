@@ -1,0 +1,12 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} : magasins{% endblock %}
+
+{% block titre_principal %}{{ parent() }} : valeur du stock du magasin {{ id }}{% endblock %}
+
+{% block vue %}
+    <a class="btn btn-info" href="{{ path('magasin_stock', {'id': id }) }}">Retour</a><br />
+    <p>
+        La valeur du stock est {{ total }} euro(s).
+    </p>
+{% endblock %}

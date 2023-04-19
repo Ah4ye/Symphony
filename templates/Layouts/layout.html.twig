@@ -1,0 +1,24 @@
+{# template racine (niveau 1) générique #}
+
+<!DOCTYPE html>
+
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        {#  feuille de style #}
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
+        {% block css %}{% endblock %}
+        <link rel="stylesheet"  href="{{ asset('css/styles.css') }}"  />
+
+         <script type="text/javascript" src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
+        {% block javascript %}{% endblock %}
+        <script src="{{ asset('js/scripts.js') }}" defer></script>
+
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+    </body>
+</html>

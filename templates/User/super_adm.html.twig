@@ -1,0 +1,43 @@
+{% extends 'Layouts/layout_vente.html.twig' %}
+
+{% block title %}{{ parent() }} : Liste_User{% endblock %}
+
+{% block titre_principal %}{{ parent() }} : Gerer vos clients {% endblock %}
+
+{% block vue %}
+
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th  scope="col">Nom</th>
+            <th  scope="col">Login</th>
+            <th  scope="col" >Roles</th>
+            <th  scope="col" >Mot de passe</th>
+            <th  scope="col" >Gerer</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for utilisateur in utilisateurs %}
+            {% set urlDeleteUser = path('delete_user', {'id' : utilisateur.id}) %}
+            {% set hasGestionRole = false %}
+            <tr>
+                <td>{{ utilisateur.nom }}</td>
+                <td>{{ utilisateur.login }}</td>
+                <td>
+                {% for roles in utilisateur.role %}
+                    {% if roles == 'ROLE_ADMIN' or roles == 'ROLE_BANQUE' or roles == 'ROLE_DIRIGEANT' %}
+                        {% set hasGestionRole = true %}
+                    {% endif %}
+                {{ roles}}
+                {% endfor %}
+                </td>
+                <td>{{ utilisateur.pssdw }}</td>
+                {% if not(hasGestionRole ) %}
+                    <td ><a href="{{ urlDeleteUser }}" class="btn btn-danger">Eliminer</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

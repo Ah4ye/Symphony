@@ -1,0 +1,6 @@
+{# entête du site #}
+
+
+{%  if is_granted('ROLE_GESTION') or is_granted('ROLE_ADMIN')  %}
+<p> Bonjour Mr. des commandes admin/gestionnaire ont été ajouter à la toolbars </p>
+{% endif %}

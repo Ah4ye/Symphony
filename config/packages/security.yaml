@@ -1,0 +1,96 @@
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: 'auto'           # hashage préconisé par Symfony
+
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        app_user_provider:
+            entity:
+             class: App\Entity\User
+             property: login
+
+        utilisateurs_en_memoire:
+            memory:
+                users:
+                    broots:       # utilisateur 1 : mot de passe 'toto'
+                        password: '$2y$13$cizYhCXmy1q5DIjTD0PNOOgJ.RhmdawJMe0rrhNYXejJbtWQ0dyAm'
+                        roles: ['ROLE_USER']
+                    parker:         # utilisateur 2 : mot de passe 'admin'
+                        password: '$2y$13$qHTWVQukT/aazq4/XXi2o.HJibxa2Q.Qz.9r7qvCUBQgRKn5c0Vum'
+                        roles: ['ROLE_ADMIN', 'ROLE_KILLER']
+                    # utilisateur 3 : mot de passe 'qwerty'
+                    jarod:
+                        password: '$2y$13$bAmd5A0kXDcylSt2K5b7RuCAlys4Uk3Cg5YvtXq8bkWnm5QOSf3r6'
+                        roles: ['ROLE_SUPER_ADMIN']
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:                                        # nom du firewall : le nom est libre
+            lazy: true                               # gestion du lancement de la session (à étudier)
+            provider: app_user_provider        # désigne les utilisateurs concernés par le firewall
+            custom_authenticator: App\Security\MyLoginFormAuthenticator
+
+
+            logout :
+                path: security_logout
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    role_hierarchy:
+        ROLE_USER : [ROLE_CLIENT,ROLE_USER]
+        ROLE_ADMIN: [ROLE_GESTION,ROLE_BANQUE]                            # un admin a les droits d'une user avec les siens en plus
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_DIRIGEANT]      # super_admin = sur-ensemble d'admin (et donc user) et de banque
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # URL "/" (et uniquement celle-là) : pas besoin d'authentification
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        # URLs commençant par "/sandbox" : il faut être au moins ADMIN (donc ADMIN ou SUPER_ADMIN ici)
+        - { path: ^/sandbox, roles: ROLE_ADMIN }
+        # URLs commençant par "/produit/list" : il faut être authentifié quel que soit le rôle
+        - { path: ^/produit/list, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/panier, roles: ROLE_CLIENT }
+        - { path: ^/profile, roles: ROLE_CLIENT }
+
+        -  { path: ^/produit/add_product, roles: [ROLE_GESTION,ROLE_BANQUE] }
+        - { path: ^/produit/edit, roles: ROLE_GESTION }
+        - { path: ^/produit/add_fixture, roles: ROLE_GESTION }
+        - { path: ^/produit/add/pays, roles: ROLE_GESTION }
+        - { path: ^/produit/add/magasin, roles: ROLE_GESTION }
+        - { path: ^/produit/delete, roles: ROLE_GESTION }
+        - { path: ^/magasin/add, roles: ROLE_GESTION }
+        - { path: ^/magasin/stock, roles: ROLE_GESTION }
+        - { path: ^/magasin/valeur-stock, roles: ROLE_GESTION }
+        - { path: ^/magasin/edit, roles: ROLE_GESTION }
+        - { path: ^/gere_client, roles: [ROLE_GESTION,ROLE_BANQUE] }
+
+        - { path: ^/delete_user, roles: ROLE_ADMIN }
+
+
+
+        # toutes les URLs commençant par "n'importe quoi" (donc toutes les autres) : être au moins USER ou KILLER
+        #- { path: ^/, roles: [ROLE_USER, ROLE_KILLER] }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon
